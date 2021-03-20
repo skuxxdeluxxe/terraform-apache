@@ -13,5 +13,5 @@ variable "subnets_cidr" {
 
 variable "azs" {
   type    = list(string)
-  default = ["ap-southeast-2", "ap-southeast-2"]
+  default = ["ap-southeast-2a", "ap-southeast-2a"]
 }
