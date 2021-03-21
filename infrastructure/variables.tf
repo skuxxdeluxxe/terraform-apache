@@ -18,7 +18,7 @@ variable "private_subnets_cidr" {
 
 variable "azs" {
   type    = list(string)
-  default = ["ap-southeast-2a", "ap-southeast-2a"]
+  default = ["ap-southeast-2a", "ap-southeast-2b"]
 }
 
 variable "ami" {
