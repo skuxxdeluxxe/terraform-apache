@@ -3,6 +3,16 @@ resource "aws_alb_target_group" "loadbalancer-target-group" {
   port     = 80
   protocol = "HTTP"
   vpc_id   = aws_vpc.terra_vpc.id
+
+  health_check {
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+    timeout             = 3
+    path                = "/index.html"
+    port                = 80
+    protocol            = "HTTP"
+    interval            = 30
+  }
 }
 
 resource "aws_alb" "loadbalancer" {
