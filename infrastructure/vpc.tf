@@ -9,9 +9,6 @@ resource "aws_vpc" "terra_vpc" {
 # Internet Gateway
 resource "aws_internet_gateway" "terra_igw" {
   vpc_id = aws_vpc.terra_vpc.id
-  tags = {
-    Name = "main"
-  }
 }
 
 # Subnets : public
@@ -44,13 +41,13 @@ resource "aws_route_table" "public_rt" {
     gateway_id = aws_internet_gateway.terra_igw.id
   }
   tags = {
-    Name = "publicRouteTable"
+    Name = "PublicRouteTable"
   }
 }
 
 # Route table association with public subnets
 resource "aws_route_table_association" "a" {
-  count          = length(var.subnets_cidr)
+  count          = length(var.public_subnets_cidr)
   subnet_id      = element(aws_subnet.public.*.id, count.index)
   route_table_id = aws_route_table.public_rt.id
 }
