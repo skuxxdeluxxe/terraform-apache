@@ -29,9 +29,12 @@ resource "aws_launch_configuration" "webserver-lc" {
   key_name        = var.key_name
   security_groups = [aws_security_group.webserver-sg.id]
   user_data       = <<-EOF
-              #!/bin/bash
-              echo "Hello, World" > index.html
-              nohup busybox httpd -f -p 8080 &
+                #!/bin/bash
+                sudo yum update
+                sudo yum install -y httpd
+                sudo chkconfig httpd on
+                sudo service httpd start
+                echo "<h1>Hello Plexure!</h1>" | sudo tee /var/www/html/index.html
               EOF
 
   lifecycle {
