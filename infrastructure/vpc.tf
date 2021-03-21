@@ -2,7 +2,7 @@
 resource "aws_vpc" "terra_vpc" {
   cidr_block = var.vpc_cidr
   tags = {
-    Name = "TerraVPC"
+    Name = "WebServerVPC"
   }
 }
 
@@ -16,12 +16,23 @@ resource "aws_internet_gateway" "terra_igw" {
 
 # Subnets : public
 resource "aws_subnet" "public" {
-  count             = length(var.subnets_cidr)
+  count             = length(var.public_subnets_cidr)
   vpc_id            = aws_vpc.terra_vpc.id
-  cidr_block        = element(var.subnets_cidr, count.index)
+  cidr_block        = element(var.public_subnets_cidr, count.index)
   availability_zone = element(var.azs, count.index)
   tags = {
-    Name = "Subnet-${count.index + 1}"
+    Name = "Public-Subnet-${count.index + 1}"
+  }
+}
+
+# Subnets : private
+resource "aws_subnet" "private" {
+  count             = length(var.private_subnets_cidr)
+  vpc_id            = aws_vpc.terra_vpc.id
+  cidr_block        = element(var.private_subnets_cidr, count.index)
+  availability_zone = element(var.azs, count.index)
+  tags = {
+    Name = "Private-Subnet-${count.index + 1}"
   }
 }
 
