@@ -20,3 +20,11 @@ variable "azs" {
   type    = list(string)
   default = ["ap-southeast-2a", "ap-southeast-2a"]
 }
+
+variable "ami" {
+  default = "ami-0b3d7a5ecc2daba4c"
+}
+
+variable "key_name" {
+  default = "test-deploy"
+}
