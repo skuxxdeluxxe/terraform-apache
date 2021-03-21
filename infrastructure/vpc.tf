@@ -11,18 +11,19 @@ resource "aws_internet_gateway" "terra_igw" {
   vpc_id = aws_vpc.terra_vpc.id
 }
 
-# Subnets : public
+# Create Public Subnets
 resource "aws_subnet" "public" {
-  count             = length(var.public_subnets_cidr)
-  vpc_id            = aws_vpc.terra_vpc.id
-  cidr_block        = element(var.public_subnets_cidr, count.index)
-  availability_zone = element(var.azs, count.index)
+  count                   = length(var.public_subnets_cidr)
+  vpc_id                  = aws_vpc.terra_vpc.id
+  cidr_block              = element(var.public_subnets_cidr, count.index)
+  availability_zone       = element(var.azs, count.index)
+  map_public_ip_on_launch = "true"
   tags = {
     Name = "Public-Subnet-${count.index + 1}"
   }
 }
 
-# Subnets : private
+# Create Private Subnets
 resource "aws_subnet" "private" {
   count             = length(var.private_subnets_cidr)
   vpc_id            = aws_vpc.terra_vpc.id
