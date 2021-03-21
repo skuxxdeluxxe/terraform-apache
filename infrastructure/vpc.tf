@@ -51,3 +51,16 @@ resource "aws_route_table_association" "a" {
   subnet_id      = element(aws_subnet.public.*.id, count.index)
   route_table_id = aws_route_table.public_rt.id
 }
+
+# Create EIPS for Nat Gateways
+resource "aws_eip" "nat_eip" {
+  count = length(var.public_subnets_cidr)
+  vpc   = true
+}
+
+# Create Nat Gateways and associate them to the public subnets
+resource "aws_nat_gateway" "nat_gw" {
+  count         = length(var.public_subnets_cidr)
+  allocation_id = element(aws_eip.nat_eip.*.id, count.index)
+  subnet_id     = element(aws_subnet.public.*.id, count.index)
+}
