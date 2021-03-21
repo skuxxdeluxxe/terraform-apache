@@ -35,3 +35,7 @@ resource "aws_alb_listener" "loadbalancer-listener" {
     type             = "forward"
   }
 }
+
+output "elb-dns-name" {
+  value = "${aws_alb.loadbalancer.dns_name}"
+}
