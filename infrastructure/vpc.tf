@@ -45,8 +45,8 @@ resource "aws_route_table" "public_rt" {
   }
 }
 
-# Route table association with public subnets
-resource "aws_route_table_association" "a" {
+# Public Route Table association with Public Subnets
+resource "aws_route_table_association" "public-association" {
   count          = length(var.public_subnets_cidr)
   subnet_id      = element(aws_subnet.public.*.id, count.index)
   route_table_id = aws_route_table.public_rt.id
@@ -63,4 +63,24 @@ resource "aws_nat_gateway" "nat_gw" {
   count         = length(var.public_subnets_cidr)
   allocation_id = element(aws_eip.nat_eip.*.id, count.index)
   subnet_id     = element(aws_subnet.public.*.id, count.index)
+}
+
+# Create Private Route Tables and Route them to the Nat Gateways
+resource "aws_route_table" "private_rt" {
+  count  = length(var.private_subnets_cidr)
+  vpc_id = aws_vpc.terra_vpc.id
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = element(aws_nat_gateway.nat_gw.*.id, count.index)
+  }
+  tags = {
+    Name = "PrivateRouteTable-${count.index + 1}"
+  }
+}
+
+# Private Route Table association with Private Subnets
+resource "aws_route_table_association" "private-association" {
+  count          = length(var.private_subnets_cidr)
+  subnet_id      = element(aws_subnet.private.*.id, count.index)
+  route_table_id = element(aws_route_table.private_rt.*.id, count.index)
 }
